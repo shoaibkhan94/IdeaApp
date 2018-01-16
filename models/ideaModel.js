@@ -12,7 +12,8 @@ var ideaSchema = new Schema({
         type: Number,
         required: false,
         max: 10,
-        min: 1
+        min: 0,
+        default: 0
     },
     createdOn: {
         type: Date,
