@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "export NODE_ENV=test || set \"NODE_ENV=test\" && mocha tests/**/*.test.js",
+    "watch": "nodemon index.js"
   },
   "keywords": [
     "Node",
@@ -22,6 +23,11 @@
     "jsonwebtoken": "^8.1.0",
     "lodash": "^4.17.4",
     "mongodb": "^3.0.1",
-    "mongoose": "^4.13.9"
+    "mongoose": "^4.13.9",
+    "validator": "^9.2.0"
+  },
+  "devDependencies": {
+    "expect": "^22.1.0",
+    "supertest": "^3.0.0"
   }
 }
