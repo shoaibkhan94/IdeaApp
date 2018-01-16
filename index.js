@@ -8,6 +8,7 @@ const {mongoose} = require('./db/mongoose');
 const {Idea} = require('./models/ideaModel');
 const {User} = require('./models/userModel');
 const userController = require('./controllers/userController');
+const ideaController = require('./controllers/ideaController');
 
 const PORT = process.env.PORT || 3000;
 
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 });
 
 userController(app);
+ideaController(app);
 
 app.listen(PORT, () => {
     console.log("Server Listening on port ", PORT);
