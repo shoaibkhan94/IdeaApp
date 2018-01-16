@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const {User}  = require('./../models/userModel');
+const {User} = require('./../models/userModel');
 const {authenticate} = require('./../middleware/authentication');
 
 
@@ -40,13 +40,20 @@ module.exports = function (app) {
 
 
     /*
+    * Get a user by passing in the JWT as x-auth header
+    * */
+    app.get('/user', authenticate, (req, res) => {
+        res.send(req.user);
+    });
+
+    /*
     * Delete token from DB if token is valid
     * */
-    app.delete('/user/logout',authenticate, (req, res) => {
+    app.delete('/user/logout', authenticate, (req, res) => {
 
         //Got req.user from authenticate middleware which checks for token validity
         req.user.removeToken(req.token).then(() => {
-            res.status(200).send({message: 'Token removed successfully' });
+            res.status(200).send({message: 'Token removed successfully'});
         }, () => res.status(400).send())
     });
 
