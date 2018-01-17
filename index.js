@@ -1,12 +1,7 @@
 require('./config/config');
 const express = require('express');
 const bodyParser = require('body-parser');
-const {ObjectID} = require('mongodb');
-const _ = require('lodash');
 
-const {mongoose} = require('./db/mongoose');
-const {Idea} = require('./models/ideaModel');
-const {User} = require('./models/userModel');
 const userController = require('./controllers/userController');
 const ideaController = require('./controllers/ideaController');
 
@@ -18,7 +13,7 @@ app.use(bodyParser.json());
 
 
 app.get('/', (req, res) => {
-    res.send("IDEA APP");
+    res.send("<html><head><title>Ideas App</title></head><body style='text-align: center'><h1>Ideas App</h1><footer>Created By Shoaib Khan</footer></body></html>");
 });
 
 userController(app);

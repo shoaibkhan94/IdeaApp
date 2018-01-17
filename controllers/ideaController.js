@@ -78,11 +78,28 @@ module.exports = function (app) {
         }
 
         Idea.findOneAndRemove({_id: req.params.id, _creator: req.user._id})
-            .then(idea => res.send(idea))
+            .then(idea => res.send({idea}))
             .catch(err => res.status(400).send(err));
 
     });
 
+    /*
+    * Get all ideas created on a given date.
+    * Date to be sent only in 'yyyy-mm-dd' format
+    * */
+    app.get('/ideasByDate/:date', authenticate, (req, res) => {
+       const {date} = req.params;
+       Idea.find({createdOn: date, _creator: req.user._id}).then(ideas => res.send({ideas})).catch(err => res.status(400).send(err));
+    });
 
+    /*
+    * Get all ideas over the last X months with minimum Y stars
+    * */
+    app.get('/ideasByMonthAndStars/:months&:stars', authenticate, (req, res) => {
+        const {months, stars} = req.params;
+        const today = moment().format('YYYY-MM-DD');
+        const qDate = moment().subtract(months, 'month').format('YYYY-MM-DD');
+        Idea.find({createdOn: {"$gte": qDate, "$lte": today}, rating: {$gte: stars},_creator: req.user._id}).then(ideas => res.send({ideas})).catch(err => res.status(400).send(err));
+    });
 
 };
