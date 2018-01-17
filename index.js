@@ -13,7 +13,8 @@ app.use(bodyParser.json());
 
 
 app.get('/', (req, res) => {
-    res.send("<html><head><title>Ideas App</title></head><body style='text-align: center'><h1>Ideas App</h1><footer>Created By Shoaib Khan</footer></body></html>");
+    //res.send("<html><head><title>Ideas App</title></head><body style='text-align: center'><h1>Ideas App</h1><footer>Created By Shoaib Khan</footer></body></html>");
+    res.send({ express: 'Hello From Express' })
 });
 
 userController(app);
