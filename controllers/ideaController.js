@@ -124,14 +124,20 @@ module.exports = function (app) {
         }).catch(err => res.status(400).send(err))
     });
 
-    app.get('/exporttocsv', authenticate, (req, res) => {
 
-        var filename   = "ideas.csv";
+    /*
+    * Export All Ideas to CSV
+    * */
+    app.get('/exportToCsv/:filename?', authenticate, (req, res) => {
+
+        var filename   = req.params.filename || "ideas";
+        filename += ".csv";
         var result;
 
 
-        Idea.find({_creator: req.user._id}, '-_id idea rating createdOn').then(ideas => {
-            ideas = JSON.parse(JSON.stringify(ideas));
+        Idea.find({_creator: req.user._id}, '-_id idea rating createdOn').lean().exec().then(ideas => {
+
+            //ideas = JSON.parse(JSON.stringify(ideas));
             jsonexport(ideas,function(err, csv){
                 if(err) return console.log(err);
                 result = csv;
