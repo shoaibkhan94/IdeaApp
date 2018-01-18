@@ -2,6 +2,7 @@ require('./config/config');
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const {mongoose} = require('./db/mongoose');
 const userController = require('./controllers/userController');
 const ideaController = require('./controllers/ideaController');
 
