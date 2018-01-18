@@ -1,6 +1,8 @@
 const _ = require('lodash');
 const moment = require('moment');
 const {ObjectID} = require('mongodb');
+const jsonexport = require('jsonexport');
+
 
 const {Idea}  = require('./../models/ideaModel');
 const {authenticate} = require('./../middleware/authentication');
@@ -82,5 +84,69 @@ module.exports = function (app) {
             .catch(err => res.status(400).send(err));
 
     });
+
+    /*
+    * Get all ideas created on a given date.
+    * Date to be sent only in 'yyyy-mm-dd' format
+    * */
+    app.get('/ideasByDate/:date', authenticate, (req, res) => {
+        const {date} = req.params;
+        Idea.find({createdOn: date, _creator: req.user._id}).then(ideas => res.send({ideas})).catch(err => res.status(400).send(err));
+    });
+
+    /*
+    * Get all ideas over the last X months with minimum Y stars
+    * */
+    app.get('/ideasByMonthAndStars/:months&:stars', authenticate, (req, res) => {
+        const {months, stars} = req.params;
+        const today = moment().format('YYYY-MM-DD');
+        const qDate = moment().subtract(months, 'month').format('YYYY-MM-DD');
+        Idea.find({createdOn: {"$gte": qDate, "$lte": today}, rating: {$gte: stars},_creator: req.user._id}).then(ideas => res.send({ideas})).catch(err => res.status(400).send(err));
+    });
+
+    /*
+    * Get all ideas having minimum X stars
+    * */
+    app.get('/ideas/:stars', authenticate, (req, res) => {
+        const {stars} = req.params;
+        Idea.find({rating: {$gte: stars}, _creator: req.user._id}).then(ideas => {
+            res.send({ideas});
+        }).catch(err => res.status(400).send(err))
+    });
+
+    /*
+    * Get all ideas having minimum X stars
+    * */
+    app.get('/ideasByStars/:stars', authenticate, (req, res) => {
+        const {stars} = req.params;
+        Idea.find({rating: {$gte: stars}, _creator: req.user._id}).then(ideas => {
+            res.send({ideas});
+        }).catch(err => res.status(400).send(err))
+    });
+
+    app.get('/exporttocsv', authenticate, (req, res) => {
+
+        var filename   = "ideas.csv";
+        var result;
+
+
+        Idea.find({_creator: req.user._id}, '-_id idea rating createdOn').then(ideas => {
+            ideas = JSON.parse(JSON.stringify(ideas));
+            jsonexport(ideas,function(err, csv){
+                if(err) return console.log(err);
+                result = csv;
+            });
+
+
+            res.setHeader('Content-Type', 'text/csv');
+
+            res.setHeader("Content-Disposition", 'attachment; filename='+filename);
+
+            res.status(200).send(result);
+
+        }).catch(err => res.status(400).send(err));
+
+    });
+
 
 };
